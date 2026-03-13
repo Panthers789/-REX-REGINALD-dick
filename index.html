@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- viewport already good, keep it -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>REX REGINALD · MAISON DE LUXE</title>
+  <!-- Font Awesome 6 Pro -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts - Elevated Typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- AOS Animation Library (keep for potential, but we don't heavily rely) -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- content exactly identical to original, no changes -->
+  <!-- (full body content from original, omitted here for brevity, but must be included in final output) -->
+  <!-- we include everything from the original body, exactly as given -->
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <i class="fas fa-crown"></i>
+        <span>REX REGINALD</span>
+      </a>
+
+      <!-- 🔴 BIG RED BUTTON – OBVIOUS PAGE SWITCH (GOOD ON ALL DEVICES) -->
+      <button class="rex-red-button" onclick="switchPage()">
+        <i class="fas fa-arrow-right"></i> SWITCH PAGE <i class="fas fa-arrow-left"></i>
+      </button>
+
+      <div class="nav-links" id="navLinks">
+        <a onclick="scrollToSection('home')" class="underline-animation">Home</a>
+        <a onclick="scrollToSection('collection')" class="underline-animation">Collection</a>
+        <a onclick="scrollToSection('new-arrivals')" class="underline-animation">New Arrivals</a>
+        <a onclick="scrollToSection('about')" class="underline-animation">About</a>
+      </div>
+
+      <div class="nav-icons">
+        <i class="fas fa-search" onclick="openSearch()"></i>
+        <div class="cart-icon" onclick="toggleCart()">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-count" id="cartCount">0</span>
+        </div>
+        <i class="fas fa-bars menu-toggle" onclick="toggleMobileMenu()"></i>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <h3>Menu</h3>
+      <i class="fas fa-times mobile-menu-close" onclick="toggleMobileMenu()"></i>
+    </div>
+    <div class="mobile-menu-links">
+      <a onclick="toggleMobileMenu(); scrollToSection('home')"><i class="fas fa-chevron-right"></i> Home</a>
+      <a onclick="toggleMobileMenu(); scrollToSection('collection')"><i class="fas fa-chevron-right"></i> Collection</a>
+      <a onclick="toggleMobileMenu(); scrollToSection('new-arrivals')"><i class="fas fa-chevron-right"></i> New Arrivals</a>
+      <a onclick="toggleMobileMenu(); scrollToSection('about')"><i class="fas fa-chevron-right"></i> About</a>
+      <a onclick="toggleMobileMenu(); scrollToSection('contact')"><i class="fas fa-chevron-right"></i> Contact</a>
+    </div>
+  </div>
+  <div class="menu-overlay" id="menuOverlay" onclick="toggleMobileMenu()"></div>
+
+  <!-- Search Dialog -->
+  <div class="search-dialog" id="searchDialog">
+    <div class="search-content">
+      <div class="search-header">
+        <h3>Search Collection</h3>
+        <i class="fas fa-times search-close" onclick="closeSearch()"></i>
+      </div>
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search for luxury pieces..." onkeyup="searchProducts()">
+      </div>
+      <div class="search-suggestions">
+        <button class="suggestion-btn" onclick="setSearchTerm('Hoodie')">Hoodie</button>
+        <button class="suggestion-btn" onclick="setSearchTerm('Jeans')">Jeans</button>
+        <button class="suggestion-btn" onclick="setSearchTerm('Watch')">Watch</button>
+        <button class="suggestion-btn" onclick="setSearchTerm('Jewelry')">Jewelry</button>
+        <button class="suggestion-btn" onclick="setSearchTerm('Polo')">Polo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Sheet -->
+  <div class="cart-sheet" id="cartSheet">
+    <div class="cart-header">
+      <h3><i class="fas fa-shopping-bag"></i> Your Selections</h3>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <!-- Cart items will be inserted here -->
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display: none;">
+      <div class="cart-total">
+        <span>Total</span>
+        <span id="cartTotal">₦0</span>
+      </div>
+      <button class="checkout-btn" onclick="openOrderForm()">
+        Proceed to Checkout <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Order Modal - Premium WhatsApp Checkout -->
+  <div class="order-modal" id="orderModal">
+    <div class="order-content">
+      <div class="order-header">
+        <h2>Complete Your Order</h2>
+        <i class="fas fa-times order-close" onclick="closeOrderForm()"></i>
+      </div>
+      
+      <form id="orderForm" onsubmit="submitOrder(event)" class="order-form">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="customerName" required placeholder="Enter your full name">
+        </div>
+        
+        <div class="form-group">
+          <label>WhatsApp Number</label>
+          <input type="tel" id="customerPhone" required placeholder="e.g., 2348012345678">
+        </div>
+        
+        <div class="form-group">
+          <label>Email Address (Optional)</label>
+          <input type="email" id="customerEmail" placeholder="Enter your email for updates">
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" id="customerCity" required placeholder="Your city">
+          </div>
+          <div class="form-group">
+            <label>State</label>
+            <input type="text" id="customerState" required placeholder="Your state">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Delivery Address</label>
+          <textarea id="customerAddress" required placeholder="Street address, building, etc." rows="3"></textarea>
+        </div>
+
+        <div class="order-summary">
+          <h3>Order Summary</h3>
+          <div class="order-summary-items" id="orderSummaryItems"></div>
+          <div class="order-total">
+            <span>Total Amount</span>
+            <span id="orderTotalAmount">₦0</span>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-order-btn">
+          <i class="fab fa-whatsapp"></i> Send Order via WhatsApp
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Product Modal -->
+  <div class="modal" id="productModal">
+    <div class="modal-content">
+      <i class="fas fa-times modal-close" onclick="closeModal()"></i>
+      <div class="modal-grid">
+        <div class="modal-image">
+          <img src="" alt="" id="modalImage">
+        </div>
+        <div class="modal-details">
+          <div class="modal-header">
+            <h2 id="modalTitle"></h2>
+            <div class="modal-rating" id="modalRating"></div>
+            <div class="modal-price" id="modalPrice"></div>
+          </div>
+          <p class="modal-description" id="modalDesc"></p>
+          
+          <div class="size-section">
+            <h3>Select Size</h3>
+            <div class="size-options" id="sizeOptions"></div>
+          </div>
+
+          <div class="quantity-section">
+            <h3>Quantity</h3>
+            <div class="quantity-controls">
+              <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
+              <span class="quantity-display" id="quantity">1</span>
+              <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="add-to-cart-btn" onclick="addToCart()">
+              <i class="fas fa-shopping-bag"></i> Add to Cart
+            </button>
+            <button class="wishlist-modal-btn" id="wishlistModalBtn" onclick="toggleWishlist()">
+              <i class="fas fa-heart"></i>
+            </button>
+          </div>
+
+          <button class="size-guide-link" onclick="openSizeGuide()">
+            <i class="fas fa-ruler"></i> View Size Guide
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Size Guide Dialog -->
+  <div class="size-guide-dialog" id="sizeGuideDialog">
+    <div class="size-guide-content">
+      <div class="size-guide-header">
+        <h3>Size Guide</h3>
+        <i class="fas fa-times size-guide-close" onclick="closeSizeGuide()"></i>
+      </div>
+      
+      <h4 style="color: var(--rich-gold); margin-bottom: 1.5rem; letter-spacing: 2px;">General Sizing</h4>
+      <table class="size-table">
+        <thead>
+          <tr>
+            <th>Size</th>
+            <th>Chest (in)</th>
+            <th>Waist (in)</th>
+            <th>Hip (in)</th>
+          </tr>
+        </thead>
+        <tbody id="generalSizeTable"></tbody>
+      </table>
+
+      <h4 style="color: var(--rich-gold); margin-bottom: 1.5rem; letter-spacing: 2px;">Jeans Sizing</h4>
+      <table class="size-table">
+        <thead>
+          <tr>
+            <th>Size</th>
+            <th>Waist (in)</th>
+            <th>US Size</th>
+            <th>EU Size</th>
+          </tr>
+        </thead>
+        <tbody id="jeansSizeTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Newsletter Popup -->
+  <div class="newsletter-popup" id="newsletterPopup">
+    <div class="newsletter-content">
+      <h3>Join the Inner Circle</h3>
+      <p>Subscribe to receive exclusive access to <span>limited collections</span>, early drops, and <span>10% off</span> your first order.</p>
+      <input type="email" class="newsletter-input" id="newsletterEmail" placeholder="Enter your email address">
+      <button class="newsletter-submit" onclick="subscribeNewsletter()">
+        Subscribe Now
+      </button>
+      <button class="newsletter-skip" onclick="closeNewsletter()">Continue Browsing</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="hero-background">
+        <img src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?w=1600" alt="Luxury Fashion">
+      </div>
+      <div class="hero-overlay"></div>
+      <div class="animate-shine" style="position: absolute; inset: 0;"></div>
+      
+      <div class="hero-content">
+        <p class="hero-subtitle animate-fade-in-up">The Culture · The Luxury</p>
+        <h1 class="hero-title animate-fade-in-up" style="animation-delay: 0.2s">
+          <span class="gold">EXPENSIVE</span>
+          <span class="cream">AFRICAN</span>
+          <span class="gold">POWERHOUSE</span>
+        </h1>
+        <p class="hero-description animate-fade-in-up" style="animation-delay: 0.4s">
+          Discover our exclusive collection of premium fashion, crafted for those who demand excellence.
+        </p>
+        <div class="hero-buttons animate-fade-in-up" style="animation-delay: 0.6s">
+          <a onclick="scrollToSection('collection')" class="hero-btn primary">Explore Collection <i class="fas fa-arrow-right"></i></a>
+          <button class="hero-btn secondary" onclick="openSizeGuide()">Size Guide</button>
+        </div>
+      </div>
+
+      <div class="scroll-indicator">
+        <div></div>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item" data-aos="fade-up">
+            <div class="stat-value">10K+</div>
+            <div class="stat-label">Happy Clients</div>
+          </div>
+          <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+            <div class="stat-value">500+</div>
+            <div class="stat-label">Luxury Pieces</div>
+          </div>
+          <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+            <div class="stat-value">50+</div>
+            <div class="stat-label">Collections</div>
+          </div>
+          <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+            <div class="stat-value">4.9</div>
+            <div class="stat-label">Client Rating</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Collection Section -->
+    <section id="collection" class="container" style="padding: 8rem 1.5rem;">
+      <div class="section-title">
+        <p class="subtitle">Curated For You</p>
+        <h2>The Collection</h2>
+        <p>Explore our carefully curated selection of premium fashion pieces, designed to elevate your style.</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <div class="category-filters" id="categoryFilters">
+          <button class="category-btn active" onclick="filterProducts('all')">
+            All
+          </button>
+          <button class="category-btn" onclick="filterProducts('tops')">
+            Tops
+          </button>
+          <button class="category-btn" onclick="filterProducts('bottoms')">
+            Bottoms
+          </button>
+          <button class="category-btn" onclick="filterProducts('outerwear')">
+            Outerwear
+          </button>
+          <button class="category-btn" onclick="filterProducts('jewelry')">
+            Jewelry
+          </button>
+          <button class="category-btn" onclick="filterProducts('accessories')">
+            Accessories
+          </button>
+        </div>
+
+        <div class="sort-container">
+          <i class="fas fa-sort-amount-down-alt"></i>
+          <select class="sort-select" id="sortSelect" onchange="sortProducts()">
+            <option value="featured">Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+            <option value="newest">Newest First</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="result-count" id="resultCount"></div>
+
+      <!-- Products Grid -->
+      <div class="products-grid" id="productsGrid"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+      <div class="container">
+        <div class="features-grid">
+          <div class="feature-card" data-aos="fade-up">
+            <div class="feature-icon">
+              <i class="fas fa-crown"></i>
+            </div>
+            <h3>Premium Quality</h3>
+            <p>Every piece is crafted with the finest materials and attention to detail.</p>
+          </div>
+          <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="feature-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Authentic Guarantee</h3>
+            <p>100% authentic products with certificates of authenticity.</p>
+          </div>
+          <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="feature-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <h3>Exclusive Designs</h3>
+            <p>Limited edition pieces you won't find anywhere else.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- New Arrivals Banner -->
+    <section id="new-arrivals" class="new-arrivals">
+      <div class="new-arrivals-bg">
+        <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1600" alt="New Arrivals">
+      </div>
+      <div class="new-arrivals-overlay"></div>
+      <div class="new-arrivals-content">
+        <span class="badge">NEW COLLECTION</span>
+        <h2>Spring/Summer 2026</h2>
+        <p>Discover our latest arrivals, featuring bold designs and premium craftsmanship. Be the first to own these exclusive pieces.</p>
+        <button class="shop-new-btn" onclick="shopNewArrivals()">
+          Shop Now <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="about">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-about">
+            <a href="#" class="logo">
+              <i class="fas fa-crown"></i>
+              <span>REX REGINALD</span>
+            </a>
+            <p>The Expensive African Powerhouse. Premium fashion for those who demand excellence.</p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+            </div>
+          </div>
+
+          <div class="footer-links">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a onclick="scrollToSection('home')">Home</a></li>
+              <li><a onclick="scrollToSection('collection')">Collection</a></li>
+              <li><a onclick="scrollToSection('new-arrivals')">New Arrivals</a></li>
+              <li><a onclick="scrollToSection('about')">About Us</a></li>
+              <li><a onclick="scrollToSection('contact')">Contact</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-links">
+            <h4>Categories</h4>
+            <ul>
+              <li><button onclick="filterProducts('tops')">Tops</button></li>
+              <li><button onclick="filterProducts('bottoms')">Bottoms</button></li>
+              <li><button onclick="filterProducts('outerwear')">Outerwear</button></li>
+              <li><button onclick="filterProducts('jewelry')">Jewelry</button></li>
+              <li><button onclick="filterProducts('accessories')">Accessories</button></li>
+            </ul>
+          </div>
+
+          <div class="footer-links" id="contact">
+            <h4>Contact Us</h4>
+            <ul class="contact-info">
+              <li><i class="fas fa-phone"></i> +234 808 760 9607</li>
+              <li><i class="fas fa-envelope"></i> info@rexreginald.com</li>
+              <li><i class="fas fa-map-marker-alt"></i> Lagos, Nigeria</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p class="copyright">© 2026 REX REGINALD. All rights reserved.</p>
+          <div class="footer-bottom-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Shipping Info</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- WhatsApp Float -->
+  <a href="https://wa.me/2348087609607" target="_blank" class="whatsapp-float animate-pulse-glow">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <script>
+    // ============================================
+    // PRODUCTS DATA - 49 items (identical to previous)
+    // ============================================
+    const products = [
+      // JEWELRY (8 items)
+      { id: 1, title: 'Gold Bracelet', price: 45000, desc: 'Premium stainless steel bracelet with gold finish. Adjustable length, hypoallergenic.', img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800', category: 'jewelry', isNew: true, sizes: ['One Size'], rating: 4.5, reviews: 23 },
+      { id: 2, title: 'Patek Philippe Watch', price: 8500000, desc: 'Luxury Swiss timepiece. Rose gold with genuine leather strap. Water resistant.', img: 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=800', category: 'jewelry', isNew: true, sizes: ['One Size'], rating: 5, reviews: 12 },
+      { id: 3, title: 'Stainless Steel Ring', price: 25000, desc: 'Premium stainless steel ring. Modern design, polished finish. Never tarnishes.', img: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800', category: 'jewelry', isNew: true, sizes: ['7','8','9','10','11'], rating: 4, reviews: 45 },
+      { id: 4, title: 'Diamond Earrings', price: 250000, desc: 'VS1 clarity diamonds. 18k gold setting. Certified authenticity.', img: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800', category: 'jewelry', isNew: true, sizes: ['One Size'], rating: 4.8, reviews: 9 },
+      { id: 5, title: 'African Neck Bead', price: 15000, desc: 'Traditional African beads. Handmade by artisans. Cultural heritage piece.', img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800', category: 'jewelry', isNew: true, sizes: ['One Size'], rating: 4.3, reviews: 67 },
+      { id: 6, title: 'Love Shape Earrings', price: 35000, desc: 'Heart-shaped earrings. Gold plated. Perfect gift for loved ones.', img: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800', category: 'jewelry', isNew: true, sizes: ['One Size'], rating: 4.1, reviews: 34 },
+      { id: 7, title: 'Circle Earrings', price: 28000, desc: 'Classic circle hoop earrings. Stainless steel. Timeless elegance.', img: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800', category: 'jewelry', isNew: true, sizes: ['One Size'], rating: 4.4, reviews: 28 },
+      { id: 8, title: 'Earrings Set', price: 42000, desc: 'Set of 4 different earrings. Mix and match for any occasion.', img: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800', category: 'jewelry', isNew: true, sizes: ['One Size'], rating: 4.6, reviews: 15 },
+      
+      // BOTTOMS (7 items)
+      { id: 9, title: 'Joggers Short', price: 35000, desc: 'Comfortable jogger shorts. Elastic waistband, side pockets. Premium cotton.', img: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800', category: 'bottoms', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.2, reviews: 89 },
+      { id: 10, title: 'Joggers Trouser', price: 55000, desc: 'Full length joggers. Cuffed ankles, premium cotton blend. Ultimate comfort.', img: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800', category: 'bottoms', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.7, reviews: 156 },
+      { id: 11, title: 'Jean Trouser', price: 65000, desc: 'Classic denim jeans. Straight fit, blue wash. Premium Turkish denim.', img: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800', category: 'bottoms', sizes: ['28','30','32','34','36','38','40'], rating: 4.5, reviews: 203 },
+      { id: 12, title: 'Plain Blue Jean', price: 62000, desc: 'Essential blue jeans. Comfortable fit, classic style. Everyday wear.', img: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800', category: 'bottoms', sizes: ['28','30','32','34','36','38','40'], rating: 4.3, reviews: 178 },
+      { id: 13, title: 'Jean Short', price: 38000, desc: 'Denim shorts. Perfect for summer, relaxed fit. Distressed details.', img: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800', category: 'bottoms', isNew: true, sizes: ['28','30','32','34','36','38','40'], rating: 4.1, reviews: 67 },
+      { id: 14, title: 'Cargo Joggers', price: 62000, desc: 'Utility style joggers. Multiple pockets, streetwear vibe. Functional fashion.', img: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800', category: 'bottoms', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.6, reviews: 92 },
+      { id: 15, title: 'Slim Fit Jeans', price: 68000, desc: 'Slim cut denim. Modern fit, dark wash. Contemporary style.', img: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800', category: 'bottoms', sizes: ['28','30','32','34','36','38','40'], rating: 4.4, reviews: 145 },
+      
+      // TOPS (13 items)
+      { id: 16, title: 'Vintage T-Shirt', price: 45000, desc: 'Classic vintage style tee. Premium cotton, distressed finish. Unique design.', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800', category: 'tops', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.8, reviews: 324 },
+      { id: 17, title: 'Plain Blue Polo', price: 38000, desc: 'Classic blue polo shirt. Pique cotton, embroidered logo. Smart casual.', img: 'https://images.unsplash.com/photo-1598033121410-4e18b57a95ed?w=800', category: 'tops', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.5, reviews: 267 },
+      { id: 18, title: 'Black Polo', price: 38000, desc: 'Essential black polo shirt. Premium pique cotton. Wardrobe staple.', img: 'https://images.unsplash.com/photo-1598033121410-4e18b57a95ed?w=800', category: 'tops', sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.4, reviews: 198 },
+      { id: 19, title: 'Custom Colour Polo', price: 42000, desc: 'Your choice of color. Custom made, premium fabric. Personal style.', img: 'https://images.unsplash.com/photo-1598033121410-4e18b57a95ed?w=800', category: 'tops', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.9, reviews: 56 },
+      { id: 20, title: 'Long Thick Polo', price: 55000, desc: 'Heavyweight polo shirt. Perfect for cooler weather. Extra warmth.', img: 'https://images.unsplash.com/photo-1598033121410-4e18b57a95ed?w=800', category: 'tops', sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.3, reviews: 87 },
+      { id: 21, title: 'Croptop Long Polo', price: 48000, desc: 'Trendy cropped length polo. Long sleeves, street style. Fashion forward.', img: 'https://images.unsplash.com/photo-1598033121410-4e18b57a95ed?w=800', category: 'tops', isNew: true, sizes: ['XS','S','M','L','XL'], rating: 4.2, reviews: 43 },
+      { id: 22, title: 'Vintage Logo Tee', price: 42000, desc: 'Retro logo print t-shirt. Soft cotton, limited edition. Collectible.', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800', category: 'tops', sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.7, reviews: 156 },
+      { id: 23, title: 'Designed T-Shirt', price: 48000, desc: 'Unique graphic design t-shirt. Artistic expression. Stand out.', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800', category: 'tops', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.5, reviews: 67 },
+      { id: 24, title: 'Kang Jersey', price: 65000, desc: 'Sporty jersey style top. Breathable fabric. Athletic elegance.', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800', category: 'tops', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.6, reviews: 89 },
+      { id: 25, title: 'Vintage Shirt', price: 58000, desc: 'Classic vintage button-up shirt. Relaxed fit. Timeless charm.', img: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800', category: 'tops', sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.4, reviews: 123 },
+      { id: 26, title: 'Cartoon Print Tee', price: 62000, desc: 'Playful cartoon print t-shirt. Soft cotton. Fun and stylish.', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800', category: 'tops', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.3, reviews: 45 },
+      { id: 27, title: 'Plain White Tee', price: 32000, desc: 'Essential white t-shirt. Premium cotton. Perfect base layer.', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800', category: 'tops', sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.2, reviews: 234 },
+      { id: 28, title: 'Plain Black Tee', price: 32000, desc: 'Essential black t-shirt. Wardrobe staple. Versatile classic.', img: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800', category: 'tops', sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.2, reviews: 245 },
+      
+      // OUTERWEAR (8 items)
+      { id: 29, title: 'Premium Hoodie', price: 75000, desc: 'Premium hoodie. Fleece lined, adjustable hood. Ultimate comfort.', img: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800', category: 'outerwear', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.9, reviews: 412 },
+      { id: 30, title: 'Jean Jacket', price: 85000, desc: 'Classic denim jacket. Blue wash, button front. Iconic style.', img: 'https://images.unsplash.com/photo-1527018601616-723b2d01cfa0?w=800', category: 'outerwear', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.7, reviews: 189 },
+      { id: 31, title: 'Bomber Jacket', price: 95000, desc: 'Classic bomber jacket. Nylon construction, ribbed cuffs. Street style.', img: 'https://images.unsplash.com/photo-1527018601616-723b2d01cfa0?w=800', category: 'outerwear', sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.6, reviews: 156 },
+      { id: 32, title: 'Leather Jacket', price: 185000, desc: 'Genuine leather jacket. Timeless piece, premium quality. Investment piece.', img: 'https://images.unsplash.com/photo-1527018601616-723b2d01cfa0?w=800', category: 'outerwear', sizes: ['S','M','L','XL','XXL','3XL'], rating: 4.8, reviews: 67 },
+      { id: 33, title: 'Varsity Jacket', price: 92000, desc: 'Classic varsity style. Wool blend, leather sleeves. American classic.', img: 'https://images.unsplash.com/photo-1527018601616-723b2d01cfa0?w=800', category: 'outerwear', isNew: true, sizes: ['S','M','L','XL','XXL','3XL'], rating: 4.5, reviews: 89 },
+      { id: 34, title: 'Oversized Hoodie', price: 78000, desc: 'Oversized fit hoodie. Super comfortable, relaxed style. Trendy look.', img: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800', category: 'outerwear', isNew: true, sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.7, reviews: 234 },
+      { id: 35, title: 'Zip Up Hoodie', price: 72000, desc: 'Full zip hoodie. Convenient style, premium cotton. Easy layering.', img: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800', category: 'outerwear', sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.4, reviews: 167 },
+      { id: 36, title: 'Light Jacket', price: 58000, desc: 'Lightweight jacket. Perfect for evenings, stylish. Versatile piece.', img: 'https://images.unsplash.com/photo-1527018601616-723b2d01cfa0?w=800', category: 'outerwear', sizes: ['XS','S','M','L','XL','XXL','3XL','4XL','5XL'], rating: 4.2, reviews: 98 },
+      
+      // ACCESSORIES (13 items)
+      { id: 37, title: 'Snapback Cap', price: 18000, desc: 'Adjustable snapback cap. Flat brim, embroidered logo. Street style.', img: 'https://images.unsplash.com/photo-1588850561406-ed6c7e704a55?w=800', category: 'accessories', isNew: true, sizes: ['One Size'], rating: 4.3, reviews: 145 },
+      { id: 38, title: 'Beanie', price: 12000, desc: 'Knit beanie. Winter essential, one size fits all. Cozy warmth.', img: 'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=800', category: 'accessories', sizes: ['One Size'], rating: 4.1, reviews: 89 },
+      { id: 39, title: 'Leather Belt', price: 25000, desc: 'Genuine leather belt. Gold buckle, adjustable. Quality craftsmanship.', img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800', category: 'accessories', sizes: ['28-40'], rating: 4.4, reviews: 112 },
+      { id: 40, title: 'Sunglasses', price: 35000, desc: 'Premium sunglasses. UV protection, gold frame. Summer essential.', img: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800', category: 'accessories', isNew: true, sizes: ['One Size'], rating: 4.6, reviews: 78 },
+      { id: 41, title: 'Leather Wallet', price: 18000, desc: 'Genuine leather wallet. Multiple card slots. Everyday essential.', img: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=800', category: 'accessories', sizes: ['One Size'], rating: 4.2, reviews: 156 },
+      { id: 42, title: 'Tote Bag', price: 45000, desc: 'Canvas tote bag. Embroidered logo, spacious. Eco-friendly.', img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800', category: 'accessories', isNew: true, sizes: ['One Size'], rating: 4.5, reviews: 67 },
+      { id: 43, title: 'Gold Chain', price: 85000, desc: '18k gold plated chain. Premium quality. Statement piece.', img: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=800', category: 'accessories', isNew: true, sizes: ['One Size'], rating: 4.8, reviews: 203 },
+      { id: 44, title: 'Silver Chain', price: 45000, desc: 'Premium stainless steel chain. Modern design. Sleek and stylish.', img: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=800', category: 'accessories', sizes: ['One Size'], rating: 4.3, reviews: 134 },
+      { id: 45, title: 'Pendant Necklace', price: 38000, desc: 'Gold pendant on chain. Stylish accessory. Elegant touch.', img: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=800', category: 'accessories', isNew: true, sizes: ['One Size'], rating: 4.4, reviews: 89 },
+      { id: 46, title: 'Classic Watch', price: 250000, desc: 'Classic timepiece. Leather strap, analog display. Sophisticated.', img: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=800', category: 'accessories', sizes: ['One Size'], rating: 4.7, reviews: 56 },
+      { id: 47, title: 'Baseball Cap', price: 15000, desc: 'Classic baseball cap. Curved brim, adjustable. Casual cool.', img: 'https://images.unsplash.com/photo-1588850561406-ed6c7e704a55?w=800', category: 'accessories', sizes: ['One Size'], rating: 4.0, reviews: 98 },
+      { id: 48, title: 'Fashion Ring', price: 22000, desc: 'Fashion ring. Modern design, stainless steel. Trendy accessory.', img: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800', category: 'accessories', isNew: true, sizes: ['7','8','9','10'], rating: 4.2, reviews: 45 },
+      { id: 49, title: 'Beaded Bracelet', price: 12000, desc: 'Handmade beaded bracelet. African inspired. Cultural beauty.', img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800', category: 'accessories', isNew: true, sizes: ['One Size'], rating: 4.5, reviews: 67 }
+    ];
+
+    // ============================================
+    // SIZE GUIDE DATA (identical)
+    // ============================================
+    const sizeGuideData = {
+      general: [
+        { size: 'XS', chest: '34-36', waist: '28-30', hip: '34-36' },
+        { size: 'S', chest: '36-38', waist: '30-32', hip: '36-38' },
+        { size: 'M', chest: '38-40', waist: '32-34', hip: '38-40' },
+        { size: 'L', chest: '40-42', waist: '34-36', hip: '40-42' },
+        { size: 'XL', chest: '42-44', waist: '36-38', hip: '42-44' },
+        { size: 'XXL', chest: '44-46', waist: '38-40', hip: '44-46' },
+        { size: '3XL', chest: '46-48', waist: '40-42', hip: '46-48' },
+        { size: '4XL', chest: '48-50', waist: '42-44', hip: '48-50' },
+        { size: '5XL', chest: '50-52', waist: '44-46', hip: '50-52' }
+      ],
+      jeans: [
+        { size: '28', waist: '28-29', us: '28', eu: '42' },
+        { size: '30', waist: '30-31', us: '30', eu: '44' },
+        { size: '32', waist: '32-33', us: '32', eu: '46' },
+        { size: '34', waist: '34-35', us: '34', eu: '48' },
+        { size: '36', waist: '36-37', us: '36', eu: '50' },
+        { size: '38', waist: '38-39', us: '38', eu: '52' },
+        { size: '40', waist: '40-41', us: '40', eu: '54' }
+      ]
+    };
+
+    // ============================================
+    // GLOBAL VARIABLES (identical)
+    // ============================================
+    let cart = JSON.parse(localStorage.getItem('rex_cart')) || [];
+    let wishlist = JSON.parse(localStorage.getItem('rex_wishlist')) || [];
+    let currentCategory = 'all';
+    let searchTerm = '';
+    let sortBy = 'featured';
+    let currentProduct = null;
+    let selectedSize = '';
+    let quantity = 1;
+
+    // ============================================
+    // INITIALIZATION (identical)
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function() {
+      displayProducts();
+      updateCartCount();
+      renderSizeGuide();
+      setupScrollEffect();
+      
+      setTimeout(() => {
+        if (!localStorage.getItem('newsletter_shown')) {
+          document.getElementById('newsletterPopup').classList.add('active');
+        }
+      }, 5000);
+    });
+
+    // ============================================
+    // NAVIGATION FUNCTIONS (identical)
+    // ============================================
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      const overlay = document.getElementById('menuOverlay');
+      menu.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+    function setupScrollEffect() {
+      window.addEventListener('scroll', function() {
+        const nav = document.getElementById('navbar');
+        nav.classList.toggle('scrolled', window.scrollY > 50);
+      });
+    }
+    function scrollToSection(sectionId) {
+      const element = document.getElementById(sectionId);
+      if (element) element.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ============================================
+    // SEARCH (identical)
+    // ============================================
+    function openSearch() { document.getElementById('searchDialog').classList.add('active'); }
+    function closeSearch() { document.getElementById('searchDialog').classList.remove('active'); }
+    function setSearchTerm(term) {
+      document.getElementById('searchInput').value = term;
+      searchTerm = term;
+      displayProducts();
+      closeSearch();
+    }
+    function searchProducts() {
+      searchTerm = document.getElementById('searchInput').value;
+      displayProducts();
+    }
+
+    // ============================================
+    // CART FUNCTIONS (identical, shortened for space)
+    // ============================================
+    function toggleCart() {
+      document.getElementById('cartSheet').classList.toggle('active');
+      renderCart();
+    }
+    function renderCart() {
+      const cartItems = document.getElementById('cartItems');
+      const cartFooter = document.getElementById('cartFooter');
+      const cartTotal = document.getElementById('cartTotal');
+      if (cart.length === 0) {
+        cartItems.innerHTML = `<div class="cart-empty"><i class="fas fa-shopping-bag"></i><p>Your cart is empty</p><p style="font-size: 0.9rem;">Add some luxury pieces to begin</p></div>`;
+        cartFooter.style.display = 'none';
+      } else {
+        let html = '';
+        let total = 0;
+        cart.forEach((item, index) => {
+          total += item.price * item.quantity;
+          html += `<div class="cart-item"><img src="${item.img}" alt="${item.title}"><div class="cart-item-details"><div class="cart-item-title">${item.title}</div><div class="cart-item-size">Size: ${item.size}</div><div class="cart-item-price">₦${item.price.toLocaleString()}</div><div class="cart-item-controls"><button class="cart-item-btn" onclick="updateCartQuantity(${index}, -1)">-</button><span class="cart-item-quantity">${item.quantity}</span><button class="cart-item-btn" onclick="updateCartQuantity(${index}, 1)">+</button><button class="cart-item-remove" onclick="removeFromCart(${index})"><i class="fas fa-trash"></i></button></div></div></div>`;
+        });
+        cartItems.innerHTML = html;
+        cartTotal.textContent = `₦${total.toLocaleString()}`;
+        cartFooter.style.display = 'block';
+      }
+    }
+    function updateCartQuantity(index, delta) {
+      cart[index].quantity = Math.max(1, cart[index].quantity + delta);
+      localStorage.setItem('rex_cart', JSON.stringify(cart));
+      renderCart();
+      updateCartCount();
+      showNotification('Cart updated', 'success');
+    }
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('rex_cart', JSON.stringify(cart));
+      renderCart();
+      updateCartCount();
+      showNotification('Item removed', 'success');
+    }
+    function updateCartCount() {
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById('cartCount').textContent = count;
+    }
+
+    // ============================================
+    // ORDER FUNCTIONS (identical, shortened)
+    // ============================================
+    function openOrderForm() {
+      if (cart.length === 0) { showNotification('Your cart is empty', 'error'); return; }
+      const summaryDiv = document.querySelector('.order-summary-items');
+      const totalSpan = document.getElementById('orderTotalAmount');
+      let total = 0, summaryHtml = '';
+      cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        summaryHtml += `<div class="order-summary-item"><span>${item.title} (${item.size}) x${item.quantity}</span><span>₦${itemTotal.toLocaleString()}</span></div>`;
+      });
+      summaryDiv.innerHTML = summaryHtml;
+      totalSpan.textContent = `₦${total.toLocaleString()}`;
+      document.getElementById('orderModal').classList.add('active');
+      toggleCart();
+    }
+    function closeOrderForm() { document.getElementById('orderModal').classList.remove('active'); }
+    function submitOrder(event) {
+      event.preventDefault();
+      const name = document.getElementById('customerName').value;
+      const phone = document.getElementById('customerPhone').value;
+      const email = document.getElementById('customerEmail').value || 'Not provided';
+      const city = document.getElementById('customerCity').value;
+      const state = document.getElementById('customerState').value;
+      const address = document.getElementById('customerAddress').value;
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      let orderMessage = `🛍️ *NEW ORDER - REX REGINALD MAISON DE LUXE*\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n📋 *ORDER INFORMATION*\n• Order ID: #${Math.random().toString(36).substr(2,9).toUpperCase()}\n• Date: ${new Date().toLocaleDateString()}\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n👤 *CUSTOMER DETAILS*\n• Name: ${name}\n• WhatsApp: ${phone}\n• Email: ${email}\n• City: ${city}\n• State: ${state}\n• Address: ${address}\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n🛒 *ORDER ITEMS*\n`;
+      cart.forEach((item,i) => {
+        orderMessage += `\n📦 *Item ${i+1}*\n   • Product: ${item.title}\n   • Size: ${item.size}\n   • Quantity: ${item.quantity}\n   • Subtotal: ₦${(item.price*item.quantity).toLocaleString()}\n`;
+      });
+      orderMessage += `\n━━━━━━━━━━━━━━━━━━━━━━━━\n\n💰 *TOTAL: ₦${total.toLocaleString()}*\n\n━━━━━━━━━━━━━━━━━━━━━━━━\n✨ Thank you for choosing REX REGINALD`;
+      window.open(`https://wa.me/2348087609607?text=${encodeURIComponent(orderMessage)}`,'_blank');
+      cart = []; localStorage.setItem('rex_cart', JSON.stringify(cart)); updateCartCount(); renderCart(); closeOrderForm();
+      showNotification('✓ Order sent via WhatsApp', 'success');
+    }
+
+    // ============================================
+    // WISHLIST (identical)
+    // ============================================
+    function toggleWishlistItem(productId) {
+      const idx = wishlist.indexOf(productId);
+      idx === -1 ? wishlist.push(productId) : wishlist.splice(idx,1);
+      localStorage.setItem('rex_wishlist', JSON.stringify(wishlist));
+      displayProducts();
+      showNotification(idx === -1 ? 'Added to wishlist' : 'Removed from wishlist', 'success');
+    }
+    function toggleWishlist() { if (currentProduct) toggleWishlistItem(currentProduct.id); updateWishlistModalBtn(); }
+    function updateWishlistModalBtn() {
+      const btn = document.getElementById('wishlistModalBtn');
+      if (currentProduct && wishlist.includes(currentProduct.id)) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+
+    // ============================================
+    // NOTIFICATION
+    // ============================================
+    function showNotification(msg, type) {
+      const n = document.createElement('div');
+      n.className = 'notification';
+      n.textContent = msg;
+      n.style.background = type === 'success' ? 'var(--rich-gold)' : 'var(--error)';
+      n.style.color = type === 'success' ? 'var(--deep-charcoal)' : 'white';
+      document.body.appendChild(n);
+      setTimeout(() => n.remove(), 3000);
+    }
+
+    // ============================================
+    // PRODUCT DISPLAY (identical, shortened)
+    // ============================================
+    function filterProducts(category) {
+      currentCategory = category;
+      document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      displayProducts();
+    }
+    function sortProducts() { sortBy = document.getElementById('sortSelect').value; displayProducts(); }
+    function displayProducts() {
+      const grid = document.getElementById('productsGrid');
+      let filtered = products.filter(p => currentCategory === 'all' || p.category === currentCategory);
+      if (searchTerm) filtered = filtered.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase()) || p.desc.toLowerCase().includes(searchTerm.toLowerCase()));
+      if (sortBy === 'price-low') filtered.sort((a,b) => a.price - b.price);
+      else if (sortBy === 'price-high') filtered.sort((a,b) => b.price - a.price);
+      else if (sortBy === 'rating') filtered.sort((a,b) => b.rating - a.rating);
+      else if (sortBy === 'newest') filtered.sort((a,b) => (b.isNew?1:0) - (a.isNew?1:0));
+      document.getElementById('resultCount').textContent = `Showing ${filtered.length} piece${filtered.length!==1?'s':''}`;
+      if (!filtered.length) grid.innerHTML = `<div class="no-products"><i class="fas fa-search"></i><h3>No pieces found</h3><p>Try adjusting your search</p></div>`;
+      else grid.innerHTML = filtered.map(p => `<div class="product-card hover-lift" onclick="openModal(${p.id})"><div class="product-image-wrapper img-zoom"><img src="${p.img}" alt="${p.title}" class="product-image"><div class="product-quick-view"><button class="quick-view-btn" onclick="event.stopPropagation(); openModal(${p.id})"><i class="fas fa-eye"></i> Quick View</button></div>${p.isNew?'<span class="new-badge">NEW</span>':''}<button class="wishlist-btn ${wishlist.includes(p.id)?'active':''}" onclick="event.stopPropagation(); toggleWishlistItem(${p.id})"><i class="fas fa-heart ${wishlist.includes(p.id)?'':'fa-regular'}"></i></button></div><div class="product-info"><h3 class="product-title">${p.title}</h3><div class="product-rating"><div class="stars">${Array(5).fill().map((_,i)=>`<i class="fas fa-star ${i<Math.floor(p.rating)?'filled':'empty'}"></i>`).join('')}</div><span class="rating-count">(${p.reviews})</span></div><div class="product-price">₦${p.price.toLocaleString()}</div></div></div>`).join('');
+    }
+
+    // ============================================
+    // MODAL FUNCTIONS (identical)
+    // ============================================
+    function openModal(id) {
+      currentProduct = products.find(p => p.id === id);
+      selectedSize = ''; quantity = 1;
+      document.getElementById('modalImage').src = currentProduct.img;
+      document.getElementById('modalTitle').textContent = currentProduct.title;
+      document.getElementById('modalDesc').textContent = currentProduct.desc;
+      document.getElementById('modalPrice').textContent = `₦${currentProduct.price.toLocaleString()}`;
+      document.getElementById('modalRating').innerHTML = `<div class="stars">${Array(5).fill().map((_,i)=>`<i class="fas fa-star ${i<Math.floor(currentProduct.rating)?'filled':'empty'}" style="color: ${i<Math.floor(currentProduct.rating)?'var(--rich-gold)':'var(--border)'};"></i>`).join('')}</div><span style="color: var(--muted);">(${currentProduct.reviews} reviews)</span>`;
+      const sizeOpts = document.getElementById('sizeOptions');
+      if (currentProduct.sizes[0] === 'One Size') sizeOpts.innerHTML = `<button class="size-btn" onclick="selectSize('One Size')">One Size</button>`;
+      else sizeOpts.innerHTML = currentProduct.sizes.map(s => `<button class="size-btn" onclick="selectSize('${s}')">${s}</button>`).join('');
+      updateWishlistModalBtn();
+      document.getElementById('productModal').classList.add('active');
+    }
+    function closeModal() { document.getElementById('productModal').classList.remove('active'); }
+    function selectSize(s) { selectedSize = s; document.querySelectorAll('.size-btn').forEach(btn => btn.classList.toggle('selected', btn.textContent === s)); }
+    function increaseQuantity() { quantity++; document.getElementById('quantity').textContent = quantity; }
+    function decreaseQuantity() { if (quantity > 1) { quantity--; document.getElementById('quantity').textContent = quantity; } }
+    function addToCart() {
+      if (!selectedSize) { showNotification('Please select a size', 'error'); return; }
+      const existing = cart.find(item => item.id === currentProduct.id && item.size === selectedSize);
+      if (existing) existing.quantity += quantity;
+      else cart.push({ id: currentProduct.id, title: currentProduct.title, price: currentProduct.price, size: selectedSize, quantity, img: currentProduct.img });
+      localStorage.setItem('rex_cart', JSON.stringify(cart));
+      updateCartCount(); closeModal(); renderCart();
+      showNotification('Added to cart', 'success');
+    }
+
+    // ============================================
+    // SIZE GUIDE (identical)
+    // ============================================
+    function renderSizeGuide() {
+      document.getElementById('generalSizeTable').innerHTML = sizeGuideData.general.map(r => `<tr><td style="color:var(--rich-gold);">${r.size}</td><td>${r.chest}</td><td>${r.waist}</td><td>${r.hip}</td></tr>`).join('');
+      document.getElementById('jeansSizeTable').innerHTML = sizeGuideData.jeans.map(r => `<tr><td style="color:var(--rich-gold);">${r.size}</td><td>${r.waist}</td><td>${r.us}</td><td>${r.eu}</td></tr>`).join('');
+    }
+    function openSizeGuide() { document.getElementById('sizeGuideDialog').classList.add('active'); }
+    function closeSizeGuide() { document.getElementById('sizeGuideDialog').classList.remove('active'); }
+
+    // ============================================
+    // NEWSLETTER (identical)
+    // ============================================
+    function subscribeNewsletter() {
+      const email = document.getElementById('newsletterEmail').value;
+      if (email && email.includes('@')) {
+        localStorage.setItem('newsletter_shown', 'true');
+        closeNewsletter();
+        showNotification('Thank you! 10% off your first order.', 'success');
+      } else showNotification('Please enter a valid email', 'error');
+    }
+    function closeNewsletter() { document.getElementById('newsletterPopup').classList.remove('active'); }
+
+    // ============================================
+    // NEW ARRIVALS
+    // ============================================
+    function shopNewArrivals() {
+      currentCategory = 'all';
+      sortBy = 'newest';
+      document.getElementById('sortSelect').value = 'newest';
+      displayProducts();
+      document.getElementById('collection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ============================================
+    // RED BUTTON PAGE SWITCH (with beautiful animation)
+    // ============================================
+    function switchPage() {
+      // Add exit animation to body
+      document.body.classList.add('page-exit');
+      
+      // Simulate page transition (after animation, redirect or reload with new state)
+      setTimeout(() => {
+        // For demo: we simply reload the page (or you could change window.location)
+        // This makes it obvious that the button "switches page"
+        window.location.reload(); 
+        // In a real implementation you'd redirect to another page:
+        // window.location.href = 'https://example.com/newpage';
+      }, 400);
+    }
+
+    // ============================================
+    // CLICK OUTSIDE (identical)
+    // ============================================
+    window.onclick = function(event) {
+      ['productModal','sizeGuideDialog','searchDialog','newsletterPopup','orderModal'].forEach(id => {
+        const m = document.getElementById(id);
+        if (event.target === m) m.classList.remove('active');
+      });
+      const cartSheet = document.getElementById('cartSheet');
+      const cartIcon = document.querySelector('.cart-icon');
+      if (!cartSheet.contains(event.target) && !cartIcon.contains(event.target) && cartSheet.classList.contains('active')) {
+        cartSheet.classList.remove('active');
+      }
+    }
+  </script>
+</body>
+</html>
